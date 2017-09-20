@@ -32,7 +32,7 @@ class Interpolator(object):
 		mathworks-dot-com/moler/interp.pdf)
 		"""
 
-		# dimension compnents
+		# dimension components
 		n_diffs = len(h) + 1
 		r_vec = np.zeros(n_diffs)
 		a_mat = np.zeros((n_diffs, n_diffs))
@@ -45,15 +45,6 @@ class Interpolator(object):
 		r_vec[-1] = (h[-1] ** 2 * delta[-2] + \
 					 (2.0 * (h[-2] + h[-1]) + h[-1]) * \
 					 h[-2] * delta[-1]) / (h[-2] + h[-1])
-		
-		'''
-		print h
-		print delta
-		print r_vec
-		print 3 * (delta[0] * 5 + delta[1]) / 6
-		print 3 * (delta[0:-2] + delta[1:-1])
-		print 3 * (delta[-1] * 5 + delta[-2]) / 6
-		'''
 
 		# form dense A matrix
 		a_mat[0, 0] = h[1]
@@ -64,8 +55,6 @@ class Interpolator(object):
 			a_mat[i, i+1] = h[i-1]
 		a_mat[-1, -2] = h[-1] + h[-2]
 		a_mat[-1, -1] = h[-2]
-		
-		#print a_mat
 
 		# solve system and return
 		return np.linalg.solve(a_mat, r_vec)

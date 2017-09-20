@@ -31,11 +31,6 @@ n_data = 50
 nu = 2.0 / n_data
 x = np.arange(n_data)
 t = template(x, nu)
-'''
-x = np.arange(n_data) * 1.1 ** np.arange(n_data)
-x = x / np.max(x) * n_data
-y = x ** 1.5 * np.sin(2.0 * np.pi * nu * x)
-'''
 test = chsi.Interpolator(x, t)
 
 # generate noisy observations with some lag
@@ -46,53 +41,6 @@ lag = 0.25 / nu
 x_obs = 15.0 + lag + np.linspace(0.0, 1.0 / nu, n_obs)
 t_obs = template(x_obs, nu, lag, amp) + \
 		npr.randn(n_obs) * noise_sig
-
-
-'''
-mp.plot(x, t)
-mp.plot(x_obs, t_obs)
-mp.show()
-
-# now let's "sample" the correct lag and interpolate the template onto
-# these points
-x_int = x_obs - lag
-t_int = amp * test.interpolate(x_int)
-mp.plot(x, t)
-mp.plot(x_obs, t_obs)
-mp.scatter(x_int, t_int)
-mp.show()
-
-
-mp.plot(x_int, t_obs - t_int, 'b')
-mp.axhline(noise_sig, color='grey')
-mp.axhline(-noise_sig, color='grey')
-mp.show()
-
-n_lags = 20
-lags = np.linspace(0.5, 1.5, n_lags) * lag
-chisq = np.zeros(n_lags)
-for i in range(n_lags):
-	x_int = x_obs - lags[i]
-	print np.min(x_int), np.max(x_int)
-	t_int = amp * test.interpolate(x_int)
-	chisq[i] = np.sum(((t_obs - t_int) / noise_sig) ** 2)
-mp.plot(lags, chisq)
-mp.show()
-'''
-
-# what do we actually need to do?
-# 1) generate template with zero lag
-# 2) observe without noise for now, with regular sampling, unit amplitude
-# 3) generate dependent observations:
-#     - noisy
-#     - lagged
-#     - linear function of template for now (amp * template(lag))
-# 4) fit!
-# 5) VERSIONS
-#     - Python interpolant, Stan interpolate
-#     - Python interpolant, C++ interpolate
-#     - do these have different speeds? acceptance?
-
 
 # compile Stan model
 base = 'chsi'
